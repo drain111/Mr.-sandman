@@ -1,7 +1,9 @@
 #include "AppDelegate.h"
-#include "HelloWorldScene.h"
+#include "MainMenuScene.h"
 
 USING_NS_CC;
+
+
 
 AppDelegate::AppDelegate() {
 
@@ -15,22 +17,37 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // initialize director
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
+	auto console = director->getConsole();
+	console->listenOnTCP(1234);
     if(!glview) {
         glview = GLView::create("My Game");
         director->setOpenGLView(glview);
     }
-
+	auto fileUtils = FileUtils::getInstance();
+	 std::vector<std::string> resDirOrders;
+ 
     // turn on display FPS
     director->setDisplayStats(true);
 
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0 / 60);
 
-    // create a scene. it's an autorelease object
-    auto scene = HelloWorld::createScene();
+    // create a scene. it's an autorelease object Sets the search path for images
+	resDirOrders.push_back("images");
+
+	glview->setFrameSize(1024, 600);
+    glview->setDesignResolutionSize(1024, 600, ResolutionPolicy::EXACT_FIT);
+
+	fileUtils->setSearchPaths(resDirOrders);
+
+	auto scene = MainMenu::createScene();
+    
+	director->runWithScene(scene);
+ // 
+
+
 
     // run
-    director->runWithScene(scene);
 
     return true;
 }
